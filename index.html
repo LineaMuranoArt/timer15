@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>Linea Murano Art - Timer 15</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#020304;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    color:white;
+}
+
+.page{
+    width:100vw;
+    height:100vh;
+    position:relative;
+    overflow:hidden;
+
+    background:
+        radial-gradient(circle at 50% 48%,
+        rgba(40,55,68,.16),
+        transparent 43%),
+
+        radial-gradient(circle at 75% 48%,
+        rgba(255,30,20,.035),
+        transparent 40%),
+
+        linear-gradient(
+        135deg,
+        #020304,
+        #090b0d 48%,
+        #010101
+        );
+}
+
+
+/* ===============================
+   LOGO
+================================ */
+
+.logo{
+    position:absolute;
+    top:4vh;
+    left:4vw;
+    z-index:10;
+}
+
+.logo-linea{
+    font-size:3vw;
+    line-height:.9;
+    font-weight:300;
+    letter-spacing:.48vw;
+
+    background:linear-gradient(
+        180deg,
+        #fff 0%,
+        #eee 35%,
+        #777 60%,
+        #fafafa 100%
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.logo-sub{
+    margin-top:.8vh;
+    margin-left:.2vw;
+
+    font-size:.72vw;
+    letter-spacing:.48vw;
+
+    color:#aaa;
+}
+
+
+/* ===============================
+   LIVE
+================================ */
+
+.live-pill{
+    position:absolute;
+    top:4vh;
+    right:4vw;
+
+    display:flex;
+    align-items:center;
+    gap:.8vw;
+
+    padding:1vh 1.7vw 1vh 1vw;
+
+    border-radius:999px;
+    border:2px solid #ff342c;
+
+    background:linear-gradient(
+        180deg,
+        rgba(225,20,15,.92),
+        rgba(110,0,0,.95)
+    );
+
+    box-shadow:
+        0 0 15px rgba(255,25,15,.55),
+        0 0 35px rgba(255,25,15,.18),
+        inset 0 1px 2px rgba(255,255,255,.30);
+}
+
+.live-dot{
+    width:1.7vw;
+    height:1.7vw;
+
+    min-width:18px;
+    min-height:18px;
+
+    border-radius:50%;
+    background:#fff;
+
+    box-shadow:
+        0 0 7px #fff,
+        0 0 15px #ff4b42,
+        0 0 25px #ff2118;
+
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+
+    0%,100%{
+        opacity:1;
+        transform:scale(1);
+    }
+
+    50%{
+        opacity:.7;
+        transform:scale(.88);
+    }
+}
+
+.live-text{
+    font-size:1.7vw;
+    font-weight:600;
+    letter-spacing:.10vw;
+    color:#fff;
+}
+
+
+/* ===============================
+   LINE
+================================ */
+
+.top-line{
+    position:absolute;
+    top:13vh;
+    left:4vw;
+    right:4vw;
+
+    height:1px;
+
+    background:linear-gradient(
+        90deg,
+        #00a8ff,
+        rgba(255,255,255,.15),
+        #ff2118
+    );
+}
+
+
+/* ===============================
+   MAIN
+================================ */
+
+.main{
+    position:absolute;
+    top:17vh;
+    left:0;
+
+    width:100%;
+
+    text-align:center;
+}
+
+.kicker{
+    font-size:1vw;
+    letter-spacing:.5vw;
+    color:#a9a9a9;
+}
+
+.title{
+    margin-top:1.8vh;
+
+    font-size:4.1vw;
+    line-height:1;
+
+    font-weight:600;
+    letter-spacing:.08vw;
+
+    background:linear-gradient(
+        180deg,
+        #fff 0%,
+        #dedede 38%,
+        #777 63%,
+        #eee 100%
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.every{
+    margin-top:2vh;
+
+    font-size:1.25vw;
+    letter-spacing:.45vw;
+
+    color:#ccc;
+}
+
+
+/* ===============================
+   TIMER PANEL
+================================ */
+
+.timer-panel{
+    position:relative;
+
+    width:66vw;
+    height:31vh;
+    min-height:230px;
+
+    margin:3vh auto 0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    clip-path:polygon(
+        5% 0,
+        95% 0,
+        100% 15%,
+        100% 85%,
+        95% 100%,
+        5% 100%,
+        0 85%,
+        0 15%
+    );
+
+    background:linear-gradient(
+        110deg,
+        #050709 0%,
+        #171b20 48%,
+        #050506 100%
+    );
+
+    border:1px solid #555;
+
+    box-shadow:
+        inset 0 0 50px rgba(255,255,255,.035),
+        0 0 40px rgba(0,0,0,.9);
+}
+
+.timer-panel:before{
+    content:"";
+
+    position:absolute;
+    inset:0;
+
+    background:linear-gradient(
+        90deg,
+        rgba(0,170,255,.85),
+        transparent 20%,
+        transparent 80%,
+        rgba(255,30,20,.85)
+    );
+
+    opacity:.30;
+}
+
+
+/* ===============================
+   DIGITAL DISPLAY
+================================ */
+
+.digital-display{
+    position:relative;
+    z-index:5;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:1vw;
+}
+
+.digit{
+    position:relative;
+
+    width:9vw;
+    height:17vw;
+
+    max-height:25vh;
+
+    min-width:70px;
+    min-height:135px;
+}
+
+.segment{
+    position:absolute;
+
+    opacity:.055;
+
+    background:#333;
+
+    transition:opacity .08s linear;
+}
+
+.segment.on{
+    opacity:1;
+
+    background:linear-gradient(
+        180deg,
+        #fff 0%,
+        #eee 18%,
+        #929292 48%,
+        #f6f6f6 76%,
+        #707070 100%
+    );
+
+    box-shadow:
+        inset 0 0 4px rgba(255,255,255,.85),
+        inset 0 -3px 5px rgba(0,0,0,.8),
+        0 3px 5px rgba(0,0,0,.9);
+}
+
+
+/* SEGMENTS */
+
+.seg-a{
+    top:0;
+    left:17%;
+    width:66%;
+    height:10%;
+
+    clip-path:polygon(
+        8% 0,
+        92% 0,
+        100% 50%,
+        92% 100%,
+        8% 100%,
+        0 50%
+    );
+}
+
+.seg-b{
+    right:0;
+    top:7%;
+    width:16%;
+    height:41%;
+
+    clip-path:polygon(
+        50% 0,
+        100% 10%,
+        100% 90%,
+        50% 100%,
+        0 90%,
+        0 10%
+    );
+}
+
+.seg-c{
+    right:0;
+    bottom:7%;
+    width:16%;
+    height:41%;
+
+    clip-path:polygon(
+        50% 0,
+        100% 10%,
+        100% 90%,
+        50% 100%,
+        0 90%,
+        0 10%
+    );
+}
+
+.seg-d{
+    bottom:0;
+    left:17%;
+    width:66%;
+    height:10%;
+
+    clip-path:polygon(
+        8% 0,
+        92% 0,
+        100% 50%,
+        92% 100%,
+        8% 100%,
+        0 50%
+    );
+}
+
+.seg-e{
+    left:0;
+    bottom:7%;
+    width:16%;
+    height:41%;
+
+    clip-path:polygon(
+        50% 0,
+        100% 10%,
+        100% 90%,
+        50% 100%,
+        0 90%,
+        0 10%
+    );
+}
+
+.seg-f{
+    left:0;
+    top:7%;
+    width:16%;
+    height:41%;
+
+    clip-path:polygon(
+        50% 0,
+        100% 10%,
+        100% 90%,
+        50% 100%,
+        0 90%,
+        0 10%
+    );
+}
+
+.seg-g{
+    top:45%;
+    left:17%;
+    width:66%;
+    height:10%;
+
+    clip-path:polygon(
+        8% 0,
+        92% 0,
+        100% 50%,
+        92% 100%,
+        8% 100%,
+        0 50%
+    );
+}
+
+
+/* ===============================
+   COLON
+================================ */
+
+.colon{
+    width:4vw;
+    height:13vw;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:2.3vw;
+}
+
+.colon-dot{
+    width:1.6vw;
+    height:1.6vw;
+
+    min-width:14px;
+    min-height:14px;
+
+    border-radius:22%;
+
+    background:#ff2118;
+
+    box-shadow:
+        0 0 7px #ff2118,
+        0 0 18px rgba(255,33,24,.75);
+}
+
+
+/* ===============================
+   NEXT
+================================ */
+
+.next{
+    margin-top:2.6vh;
+
+    font-size:1.15vw;
+    letter-spacing:.5vw;
+
+    color:#ff3027;
+}
+
+.next-line{
+    width:40vw;
+    height:1px;
+
+    margin:1vh auto 0;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #555,
+        #ff3027,
+        #555,
+        transparent
+    );
+}
+
+.next-dot{
+    width:10px;
+    height:10px;
+
+    margin:-5px auto 0;
+
+    border-radius:50%;
+
+    background:#ff3027;
+
+    box-shadow:
+        0 0 8px #ff3027,
+        0 0 16px rgba(255,48,39,.8);
+}
+
+#message{
+    margin-top:2vh;
+
+    font-size:1.4vw;
+    letter-spacing:.06vw;
+
+    color:#ddd;
+}
+
+
+/* ===============================
+   LAST 30 SECONDS
+================================ */
+
+.warning .timer-panel{
+    box-shadow:
+        inset 0 0 45px rgba(255,30,20,.10),
+        0 0 35px rgba(255,30,20,.20);
+}
+
+.warning #message{
+    color:#fff;
+    font-weight:bold;
+    font-size:1.55vw;
+}
+
+
+/* ===============================
+   ACCESS SCREEN
+================================ */
+
+.access-screen{
+    position:absolute;
+    inset:0;
+
+    z-index:100;
+
+    display:none;
+
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    background:
+        radial-gradient(
+        circle at center,
+        #25100e 0%,
+        #090303 48%,
+        #010101 100%
+    );
+}
+
+.access-screen.show{
+    display:flex;
+}
+
+
+/* LIVE NOW */
+
+.access-live{
+    display:flex;
+    align-items:center;
+
+    gap:1vw;
+
+    margin-bottom:3vh;
+
+    padding:1.1vh 2vw;
+
+    border-radius:999px;
+
+    background:#b90808;
+
+    border:2px solid #ff342c;
+
+    box-shadow:
+        0 0 35px rgba(255,30,20,.45);
+
+    font-size:1.6vw;
+    font-weight:bold;
+
+    letter-spacing:.15vw;
+}
+
+
+/* DEMONSTRATION */
+
+.access-title{
+    font-size:4.5vw;
+
+    line-height:1.05;
+
+    font-weight:700;
+
+    letter-spacing:.08vw;
+
+    background:linear-gradient(
+        180deg,
+        #fff,
+        #aaa 55%,
+        #fff
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+
+/* DIRECTIONS */
+
+.access-directions{
+    margin-top:3vh;
+
+    font-size:1.65vw;
+
+    line-height:1.55;
+
+    letter-spacing:.10vw;
+
+    color:#d8d8d8;
+}
+
+.access-directions strong{
+    color:#fff;
+    font-weight:600;
+}
+
+
+/* BLUE RED LINE */
+
+.access-line{
+    width:55vw;
+    height:2px;
+
+    margin:3vh auto;
+
+    background:linear-gradient(
+        90deg,
+        transparent,
+        #00a8ff,
+        #ff3027,
+        transparent
+    );
+}
+
+
+/* ACCESS PERMITTED */
+
+.access-permitted{
+    font-size:3vw;
+
+    font-weight:600;
+
+    line-height:1.2;
+
+    letter-spacing:.12vw;
+
+    color:#fff;
+}
+
+
+.access-small{
+    margin-top:2vh;
+
+    font-size:1.15vw;
+
+    letter-spacing:.20vw;
+
+    color:#aaa;
+}
+
+
+/* ===============================
+   FOOTER
+================================ */
+
+.footer{
+    position:absolute;
+
+    left:4vw;
+    right:4vw;
+
+    bottom:2.5vh;
+
+    border-top:1px solid #343434;
+
+    padding-top:1.8vh;
+
+    text-align:center;
+
+    font-size:.75vw;
+
+    letter-spacing:.45vw;
+
+    color:#777;
+}
+
+.footer span{
+    color:#ff3027;
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="page" id="page">
+
+
+    <div class="logo">
+
+        <div class="logo-linea">
+            LINEA
+        </div>
+
+        <div class="logo-sub">
+            MURANO ART
+        </div>
+
+    </div>
+
+
+    <div class="live-pill">
+
+        <div class="live-dot"></div>
+
+        <div class="live-text">
+            LIVE
+        </div>
+
+    </div>
+
+
+    <div class="top-line"></div>
+
+
+    <main class="main">
+
+
+        <div class="kicker">
+            MURANO LIVE GLASS EXPERIENCE
+        </div>
+
+
+        <div class="title">
+            LIVE GLASS-BLOWING DEMONSTRATION
+        </div>
+
+
+        <div class="every">
+            EVERY 15 MINUTES
+        </div>
+
+
+        <div class="timer-panel">
+
+
+            <div class="digital-display">
+
+
+                <div class="digit" id="digit1"></div>
+
+                <div class="digit" id="digit2"></div>
+
+
+                <div class="colon">
+
+                    <div class="colon-dot"></div>
+
+                    <div class="colon-dot"></div>
+
+                </div>
+
+
+                <div class="digit" id="digit3"></div>
+
+                <div class="digit" id="digit4"></div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <div class="next">
+            NEXT DEMONSTRATION
+        </div>
+
+
+        <div class="next-line"></div>
+
+        <div class="next-dot"></div>
+
+
+        <div id="message">
+            The next live demonstration will begin shortly.
+        </div>
+
+
+    </main>
+
+
+    <footer class="footer">
+
+        THE ART OF MURANO GLASS •
+
+        <span>LIVE</span>
+
+    </footer>
+
+
+</div>
+
+
+
+<!-- ===============================
+     ACCESS SCREEN
+================================ -->
+
+<div class="access-screen" id="accessScreen">
+
+
+    <div class="access-live">
+
+        <div class="live-dot"></div>
+
+        LIVE NOW
+
+    </div>
+
+
+    <div class="access-title">
+
+        THE DEMONSTRATION<br>
+        IS ABOUT TO BEGIN
+
+    </div>
+
+
+    <div class="access-directions">
+
+        PLEASE PROCEED TO THE END OF THE CORRIDOR<br>
+
+        <strong>
+        ENTER THROUGH THE DOOR ON THE LEFT<br>
+        AND TAKE A SEAT IN THE VIEWING AREA
+        </strong>
+
+    </div>
+
+
+    <div class="access-line"></div>
+
+
+    <div class="access-permitted">
+
+        ACCESS TO THE FURNACE<br>
+        IS NOW PERMITTED
+
+    </div>
+
+
+    <div class="access-small">
+
+        PLEASE FOLLOW OUR STAFF
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* ===============================
+   DIGITAL NUMBERS
+================================ */
+
+const segments =
+[
+    "a","b","c","d","e","f","g"
+];
+
+
+const digitMap =
+{
+    0:["a","b","c","d","e","f"],
+    1:["b","c"],
+    2:["a","b","g","e","d"],
+    3:["a","b","c","d","g"],
+    4:["f","g","b","c"],
+    5:["a","f","g","c","d"],
+    6:["a","f","g","e","c","d"],
+    7:["a","b","c"],
+    8:["a","b","c","d","e","f","g"],
+    9:["a","b","c","d","f","g"]
+};
+
+
+function buildDigit(element){
+
+    segments.forEach(function(name){
+
+        const segment =
+            document.createElement("span");
+
+        segment.className =
+            "segment seg-" + name;
+
+        segment.dataset.segment =
+            name;
+
+        element.appendChild(segment);
+
+    });
+
+}
+
+
+const digitElements =
+[
+    document.getElementById("digit1"),
+    document.getElementBy
