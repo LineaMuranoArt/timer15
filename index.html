@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Linea Murano Art - Timer 15</title>
 
@@ -24,7 +23,7 @@ html,body{
 
 body{
     font-family:Arial,Helvetica,sans-serif;
-    color:white;
+    color:#fff;
 }
 
 .page{
@@ -35,12 +34,12 @@ body{
 
     background:
         radial-gradient(circle at 50% 48%,
-        rgba(40,55,68,.16),
+        rgba(35,55,70,.18),
         transparent 43%),
 
-        radial-gradient(circle at 75% 48%,
-        rgba(255,30,20,.035),
-        transparent 40%),
+        radial-gradient(circle at 76% 48%,
+        rgba(255,30,20,.05),
+        transparent 38%),
 
         linear-gradient(
         135deg,
@@ -51,18 +50,17 @@ body{
 }
 
 
-/* ===============================
+/* =========================
    LOGO
-================================ */
+========================= */
 
 .logo{
     position:absolute;
     top:4vh;
     left:4vw;
-    z-index:10;
 }
 
-.logo-linea{
+.logo-main{
     font-size:3vw;
     line-height:.9;
     font-weight:300;
@@ -86,14 +84,13 @@ body{
 
     font-size:.72vw;
     letter-spacing:.48vw;
-
     color:#aaa;
 }
 
 
-/* ===============================
+/* =========================
    LIVE
-================================ */
+========================= */
 
 .live-pill{
     position:absolute;
@@ -147,8 +144,8 @@ body{
     }
 
     50%{
-        opacity:.7;
-        transform:scale(.88);
+        opacity:.65;
+        transform:scale(.86);
     }
 }
 
@@ -156,16 +153,16 @@ body{
     font-size:1.7vw;
     font-weight:600;
     letter-spacing:.10vw;
-    color:#fff;
 }
 
 
-/* ===============================
-   LINE
-================================ */
+/* =========================
+   TOP LINE
+========================= */
 
 .top-line{
     position:absolute;
+
     top:13vh;
     left:4vw;
     right:4vw;
@@ -175,15 +172,15 @@ body{
     background:linear-gradient(
         90deg,
         #00a8ff,
-        rgba(255,255,255,.15),
+        rgba(255,255,255,.13),
         #ff2118
     );
 }
 
 
-/* ===============================
+/* =========================
    MAIN
-================================ */
+========================= */
 
 .main{
     position:absolute;
@@ -198,7 +195,7 @@ body{
 .kicker{
     font-size:1vw;
     letter-spacing:.5vw;
-    color:#a9a9a9;
+    color:#999;
 }
 
 .title{
@@ -208,7 +205,7 @@ body{
     line-height:1;
 
     font-weight:600;
-    letter-spacing:.08vw;
+    letter-spacing:.07vw;
 
     background:linear-gradient(
         180deg,
@@ -232,16 +229,15 @@ body{
 }
 
 
-/* ===============================
+/* =========================
    TIMER PANEL
-================================ */
+========================= */
 
 .timer-panel{
     position:relative;
 
-    width:66vw;
-    height:31vh;
-    min-height:230px;
+    width:68vw;
+    height:32vh;
 
     margin:3vh auto 0;
 
@@ -272,8 +268,8 @@ body{
     border:1px solid #555;
 
     box-shadow:
-        inset 0 0 50px rgba(255,255,255,.035),
-        0 0 40px rgba(0,0,0,.9);
+        inset 0 0 55px rgba(255,255,255,.035),
+        0 0 45px rgba(0,0,0,.9);
 }
 
 .timer-panel:before{
@@ -290,221 +286,70 @@ body{
         rgba(255,30,20,.85)
     );
 
-    opacity:.30;
+    opacity:.28;
 }
 
 
-/* ===============================
-   DIGITAL DISPLAY
-================================ */
+/* =========================
+   COUNTDOWN
+========================= */
 
-.digital-display{
+#countdown{
     position:relative;
     z-index:5;
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
+    font-family:
+        "Arial Black",
+        "Arial Narrow",
+        Arial,
+        sans-serif;
 
-    gap:1vw;
-}
+    font-size:17vw;
+    line-height:.82;
 
-.digit{
-    position:relative;
+    font-weight:900;
 
-    width:9vw;
-    height:17vw;
+    letter-spacing:-.8vw;
 
-    max-height:25vh;
-
-    min-width:70px;
-    min-height:135px;
-}
-
-.segment{
-    position:absolute;
-
-    opacity:.055;
-
-    background:#333;
-
-    transition:opacity .08s linear;
-}
-
-.segment.on{
-    opacity:1;
+    font-variant-numeric:tabular-nums;
 
     background:linear-gradient(
         180deg,
-        #fff 0%,
-        #eee 18%,
-        #929292 48%,
-        #f6f6f6 76%,
-        #707070 100%
+        #ffffff 0%,
+        #f8f8f8 18%,
+        #8c8c8c 48%,
+        #ededed 72%,
+        #686868 100%
     );
 
-    box-shadow:
-        inset 0 0 4px rgba(255,255,255,.85),
-        inset 0 -3px 5px rgba(0,0,0,.8),
-        0 3px 5px rgba(0,0,0,.9);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    filter:
+        drop-shadow(0 3px 2px #000)
+        drop-shadow(0 0 7px rgba(255,255,255,.10));
 }
 
 
-/* SEGMENTS */
+/* due punti rossi */
 
-.seg-a{
-    top:0;
-    left:17%;
-    width:66%;
-    height:10%;
+.colon-red{
+    color:#ff2118;
 
-    clip-path:polygon(
-        8% 0,
-        92% 0,
-        100% 50%,
-        92% 100%,
-        8% 100%,
-        0 50%
-    );
-}
+    -webkit-text-fill-color:#ff2118;
 
-.seg-b{
-    right:0;
-    top:7%;
-    width:16%;
-    height:41%;
-
-    clip-path:polygon(
-        50% 0,
-        100% 10%,
-        100% 90%,
-        50% 100%,
-        0 90%,
-        0 10%
-    );
-}
-
-.seg-c{
-    right:0;
-    bottom:7%;
-    width:16%;
-    height:41%;
-
-    clip-path:polygon(
-        50% 0,
-        100% 10%,
-        100% 90%,
-        50% 100%,
-        0 90%,
-        0 10%
-    );
-}
-
-.seg-d{
-    bottom:0;
-    left:17%;
-    width:66%;
-    height:10%;
-
-    clip-path:polygon(
-        8% 0,
-        92% 0,
-        100% 50%,
-        92% 100%,
-        8% 100%,
-        0 50%
-    );
-}
-
-.seg-e{
-    left:0;
-    bottom:7%;
-    width:16%;
-    height:41%;
-
-    clip-path:polygon(
-        50% 0,
-        100% 10%,
-        100% 90%,
-        50% 100%,
-        0 90%,
-        0 10%
-    );
-}
-
-.seg-f{
-    left:0;
-    top:7%;
-    width:16%;
-    height:41%;
-
-    clip-path:polygon(
-        50% 0,
-        100% 10%,
-        100% 90%,
-        50% 100%,
-        0 90%,
-        0 10%
-    );
-}
-
-.seg-g{
-    top:45%;
-    left:17%;
-    width:66%;
-    height:10%;
-
-    clip-path:polygon(
-        8% 0,
-        92% 0,
-        100% 50%,
-        92% 100%,
-        8% 100%,
-        0 50%
-    );
+    text-shadow:
+        0 0 8px #ff2118,
+        0 0 20px rgba(255,33,24,.7);
 }
 
 
-/* ===============================
-   COLON
-================================ */
-
-.colon{
-    width:4vw;
-    height:13vw;
-
-    display:flex;
-    flex-direction:column;
-
-    justify-content:center;
-    align-items:center;
-
-    gap:2.3vw;
-}
-
-.colon-dot{
-    width:1.6vw;
-    height:1.6vw;
-
-    min-width:14px;
-    min-height:14px;
-
-    border-radius:22%;
-
-    background:#ff2118;
-
-    box-shadow:
-        0 0 7px #ff2118,
-        0 0 18px rgba(255,33,24,.75);
-}
-
-
-/* ===============================
+/* =========================
    NEXT
-================================ */
+========================= */
 
 .next{
-    margin-top:2.6vh;
+    margin-top:2.4vh;
 
     font-size:1.15vw;
     letter-spacing:.5vw;
@@ -553,26 +398,25 @@ body{
 }
 
 
-/* ===============================
+/* =========================
    LAST 30 SECONDS
-================================ */
+========================= */
 
 .warning .timer-panel{
     box-shadow:
-        inset 0 0 45px rgba(255,30,20,.10),
-        0 0 35px rgba(255,30,20,.20);
+        inset 0 0 55px rgba(255,30,20,.10),
+        0 0 40px rgba(255,30,20,.22);
 }
 
 .warning #message{
     color:#fff;
     font-weight:bold;
-    font-size:1.55vw;
 }
 
 
-/* ===============================
+/* =========================
    ACCESS SCREEN
-================================ */
+========================= */
 
 .access-screen{
     position:absolute;
@@ -583,7 +427,6 @@ body{
     display:none;
 
     flex-direction:column;
-
     align-items:center;
     justify-content:center;
 
@@ -608,7 +451,6 @@ body{
 .access-live{
     display:flex;
     align-items:center;
-
     gap:1vw;
 
     margin-bottom:3vh;
@@ -631,15 +473,13 @@ body{
 }
 
 
-/* DEMONSTRATION */
+/* TITLE */
 
 .access-title{
-    font-size:4.5vw;
-
+    font-size:4.6vw;
     line-height:1.05;
 
     font-weight:700;
-
     letter-spacing:.08vw;
 
     background:linear-gradient(
@@ -660,7 +500,6 @@ body{
     margin-top:3vh;
 
     font-size:1.65vw;
-
     line-height:1.55;
 
     letter-spacing:.10vw;
@@ -674,7 +513,7 @@ body{
 }
 
 
-/* BLUE RED LINE */
+/* LINE */
 
 .access-line{
     width:55vw;
@@ -692,13 +531,12 @@ body{
 }
 
 
-/* ACCESS PERMITTED */
+/* PERMITTED */
 
 .access-permitted{
     font-size:3vw;
 
     font-weight:600;
-
     line-height:1.2;
 
     letter-spacing:.12vw;
@@ -706,21 +544,19 @@ body{
     color:#fff;
 }
 
-
 .access-small{
     margin-top:2vh;
 
     font-size:1.15vw;
-
     letter-spacing:.20vw;
 
     color:#aaa;
 }
 
 
-/* ===============================
+/* =========================
    FOOTER
-================================ */
+========================= */
 
 .footer{
     position:absolute;
@@ -737,7 +573,6 @@ body{
     text-align:center;
 
     font-size:.75vw;
-
     letter-spacing:.45vw;
 
     color:#777;
@@ -759,7 +594,7 @@ body{
 
     <div class="logo">
 
-        <div class="logo-linea">
+        <div class="logo-main">
             LINEA
         </div>
 
@@ -804,31 +639,9 @@ body{
 
         <div class="timer-panel">
 
-
-            <div class="digital-display">
-
-
-                <div class="digit" id="digit1"></div>
-
-                <div class="digit" id="digit2"></div>
-
-
-                <div class="colon">
-
-                    <div class="colon-dot"></div>
-
-                    <div class="colon-dot"></div>
-
-                </div>
-
-
-                <div class="digit" id="digit3"></div>
-
-                <div class="digit" id="digit4"></div>
-
-
+            <div id="countdown">
+                15<span class="colon-red">:</span>00
             </div>
-
 
         </div>
 
@@ -864,9 +677,7 @@ body{
 
 
 
-<!-- ===============================
-     ACCESS SCREEN
-================================ -->
+<!-- ACCESS SCREEN -->
 
 <div class="access-screen" id="accessScreen">
 
@@ -893,8 +704,8 @@ body{
         PLEASE PROCEED TO THE END OF THE CORRIDOR<br>
 
         <strong>
-        ENTER THROUGH THE DOOR ON THE LEFT<br>
-        AND TAKE A SEAT IN THE VIEWING AREA
+            ENTER THROUGH THE DOOR ON THE LEFT<br>
+            AND TAKE A SEAT IN THE VIEWING AREA
         </strong>
 
     </div>
@@ -924,53 +735,178 @@ body{
 
 <script>
 
-
 /* ===============================
-   DIGITAL NUMBERS
+   TIMER 15 MINUTES
 ================================ */
 
-const segments =
-[
-    "a","b","c","d","e","f","g"
-];
+const page =
+    document.getElementById("page");
+
+const countdown =
+    document.getElementById("countdown");
+
+const message =
+    document.getElementById("message");
+
+const accessScreen =
+    document.getElementById("accessScreen");
 
 
-const digitMap =
-{
-    0:["a","b","c","d","e","f"],
-    1:["b","c"],
-    2:["a","b","g","e","d"],
-    3:["a","b","c","d","g"],
-    4:["f","g","b","c"],
-    5:["a","f","g","c","d"],
-    6:["a","f","g","e","c","d"],
-    7:["a","b","c"],
-    8:["a","b","c","d","e","f","g"],
-    9:["a","b","c","d","f","g"]
-};
+function updateTimer(){
+
+    const now =
+        new Date();
+
+    const minute =
+        now.getMinutes();
+
+    const second =
+        now.getSeconds();
+
+    const millisecond =
+        now.getMilliseconds();
 
 
-function buildDigit(element){
+    /*
+       SHOW ACCESS SCREEN
+       for the first 60 seconds after
+       :00 / :15 / :30 / :45
+    */
 
-    segments.forEach(function(name){
+    const isDemoMinute =
+        (
+            minute === 0 ||
+            minute === 15 ||
+            minute === 30 ||
+            minute === 45
+        );
 
-        const segment =
-            document.createElement("span");
 
-        segment.className =
-            "segment seg-" + name;
+    if(isDemoMinute){
 
-        segment.dataset.segment =
-            name;
+        accessScreen.classList.add("show");
 
-        element.appendChild(segment);
+    }
+    else{
 
-    });
+        accessScreen.classList.remove("show");
+
+    }
+
+
+    /*
+       FIND NEXT DEMONSTRATION
+    */
+
+    let nextMinute;
+
+
+    if(minute < 15){
+
+        nextMinute = 15;
+
+    }
+    else if(minute < 30){
+
+        nextMinute = 30;
+
+    }
+    else if(minute < 45){
+
+        nextMinute = 45;
+
+    }
+    else{
+
+        nextMinute = 60;
+
+    }
+
+
+    let remaining =
+        ((nextMinute - minute) * 60)
+        - second
+        - (millisecond / 1000);
+
+
+    remaining =
+        Math.ceil(remaining);
+
+
+    if(remaining <= 0){
+
+        remaining = 900;
+
+    }
+
+
+    const mins =
+        Math.floor(
+            remaining / 60
+        );
+
+
+    const secs =
+        remaining % 60;
+
+
+    /*
+       DRAW COUNTDOWN
+    */
+
+    countdown.innerHTML =
+
+        String(mins)
+        .padStart(2,"0")
+
+        +
+
+        '<span class="colon-red">:</span>'
+
+        +
+
+        String(secs)
+        .padStart(2,"0");
+
+
+    /*
+       LAST 30 SECONDS
+    */
+
+    if(remaining <= 30){
+
+        page.classList.add("warning");
+
+        message.innerHTML =
+            "THE DEMONSTRATION IS ABOUT TO BEGIN";
+
+    }
+    else{
+
+        page.classList.remove("warning");
+
+        message.innerHTML =
+            "The next live demonstration will begin shortly.";
+
+    }
 
 }
 
 
-const digitElements =
-[
-    document.getElementById("digit1"),
-    document.getElementBy
+/* first update */
+
+updateTimer();
+
+
+/* update four times per second */
+
+setInterval(
+    updateTimer,
+    250
+);
+
+</script>
+
+
+</body>
+</html>
