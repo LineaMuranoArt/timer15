@@ -731,7 +731,19 @@ body{
 
 </div>
 
+/* TEST SCHERMATA FINALE
+   Aggiungi ?test=access all'indirizzo
+*/
 
+const params = new URLSearchParams(window.location.search);
+
+if (params.get("test") === "access") {
+
+    document
+        .getElementById("accessScreen")
+        .classList
+        .add("show");
+}
 
 <script>
 
