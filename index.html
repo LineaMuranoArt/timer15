@@ -731,21 +731,374 @@ body{
 
 </div>
 
-/* TEST SCHERMATA FINALE
-   Aggiungi ?test=access all'indirizzo
+/* TEST SCHERMATA FINALE + ANNUNCI AUDIO
+   ?test=access
+   ?testaudio=10
+   ?testaudio=5
+   ?testaudio=1
+   ?testaudio=start
 */
 
-const params = new URLSearchParams(window.location.search);
+<script>
 
-if (params.get("test") === "access") {
+/* ===============================
+   TIMER 15 MINUTES + AUDIO
+================================ */
 
-    document
-        .getElementById("accessScreen")
-        .classList
-        .add("show");
+const page =
+    document.getElementById("page");
+
+const countdown =
+    document.getElementById("countdown");
+
+const message =
+    document.getElementById("message");
+
+const accessScreen =
+    document.getElementById("accessScreen");
+
+
+/* ===============================
+   AUDIO ANNOUNCEMENTS
+================================ */
+
+const audio10 =
+    new Audio("10%20Minuti.wav");
+
+const audio5 =
+    new Audio("5%20Minuti.wav");
+
+const audio1 =
+    new Audio("1%20Minuti.wav");
+
+const audioStart =
+    new Audio("Starting.wav");
+
+const chime =
+    new Audio("chime.wav");
+
+
+[audio10, audio5, audio1, audioStart, chime]
+.forEach(audio => {
+    audio.preload = "auto";
+});
+
+
+/* Keeps each announcement from repeating
+   during the 4 timer updates per second. */
+
+let lastAnnouncementKey = "";
+
+
+function playAudioOnce(key, audio){
+
+    if(lastAnnouncementKey === key){
+        return;
+    }
+
+    lastAnnouncementKey = key;
+
+    audio.currentTime = 0;
+
+    audio.play().catch(error => {
+        console.log("Audio playback blocked:", error);
+    });
 }
 
-<script>
+
+function playStartSequence(key){
+
+    if(lastAnnouncementKey === key){
+        return;
+    }
+
+    lastAnnouncementKey = key;
+
+    chime.currentTime = 0;
+
+    const startVoice = () => {
+
+        setTimeout(() => {
+
+            audioStart.currentTime = 0;
+
+            audioStart.play().catch(error => {
+                console.log("Start audio blocked:", error);
+            });
+
+        }, 450);
+    };
+
+
+    chime.onended = startVoice;
+
+    chime.play().catch(error => {
+
+        console.log("Chime blocked:", error);
+
+        /* If the chime cannot play,
+           still play the voice announcement. */
+
+        startVoice();
+    });
+}
+
+
+function announcementKey(now, name){
+
+    return (
+        now.getFullYear() + "-" +
+        (now.getMonth() + 1) + "-" +
+        now.getDate() + "-" +
+        now.getHours() + "-" +
+        now.getMinutes() + "-" +
+        name
+    );
+}
+
+
+/* ===============================
+   TIMER
+================================ */
+
+function updateTimer(){
+
+    const now =
+        new Date();
+
+    const minute =
+        now.getMinutes();
+
+    const second =
+        now.getSeconds();
+
+    const millisecond =
+        now.getMilliseconds();
+
+
+    /*
+       SHOW ACCESS SCREEN
+       for the first 60 seconds after
+       :00 / :15 / :30 / :45
+    */
+
+    const isDemoMinute =
+        (
+            minute === 0 ||
+            minute === 15 ||
+            minute === 30 ||
+            minute === 45
+        );
+
+
+    if(isDemoMinute){
+
+        accessScreen.classList.add("show");
+
+    }
+    else{
+
+        accessScreen.classList.remove("show");
+
+    }
+
+
+    /*
+       AUDIO AT START
+       :00 / :15 / :30 / :45 exactly
+    */
+
+    if(isDemoMinute && second === 0){
+
+        playStartSequence(
+            announcementKey(now, "start")
+        );
+    }
+
+
+    /*
+       FIND NEXT DEMONSTRATION
+    */
+
+    let nextMinute;
+
+
+    if(minute < 15){
+
+        nextMinute = 15;
+
+    }
+    else if(minute < 30){
+
+        nextMinute = 30;
+
+    }
+    else if(minute < 45){
+
+        nextMinute = 45;
+
+    }
+    else{
+
+        nextMinute = 60;
+
+    }
+
+
+    let remaining =
+        ((nextMinute - minute) * 60)
+        - second
+        - (millisecond / 1000);
+
+
+    remaining =
+        Math.ceil(remaining);
+
+
+    if(remaining <= 0){
+
+        remaining = 900;
+
+    }
+
+
+    const mins =
+        Math.floor(
+            remaining / 60
+        );
+
+
+    const secs =
+        remaining % 60;
+
+
+    /*
+       AUDIO AT 10 / 5 / 1 MINUTE
+    */
+
+    if(remaining === 600){
+
+        playAudioOnce(
+            announcementKey(now, "10"),
+            audio10
+        );
+    }
+
+    if(remaining === 300){
+
+        playAudioOnce(
+            announcementKey(now, "5"),
+            audio5
+        );
+    }
+
+    if(remaining === 60){
+
+        playAudioOnce(
+            announcementKey(now, "1"),
+            audio1
+        );
+    }
+
+
+    /*
+       DRAW COUNTDOWN
+    */
+
+    countdown.innerHTML =
+
+        String(mins)
+        .padStart(2,"0")
+
+        +
+
+        '<span class="colon-red">:</span>'
+
+        +
+
+        String(secs)
+        .padStart(2,"0");
+
+
+    /*
+       LAST 30 SECONDS
+    */
+
+    if(remaining <= 30){
+
+        page.classList.add("warning");
+
+        message.innerHTML =
+            "THE DEMONSTRATION IS ABOUT TO BEGIN";
+
+    }
+    else{
+
+        page.classList.remove("warning");
+
+        message.innerHTML =
+            "The next live demonstration will begin shortly.";
+
+    }
+
+}
+
+
+/* ===============================
+   TEST MODES
+================================ */
+
+const params =
+    new URLSearchParams(window.location.search);
+
+
+if(params.get("test") === "access"){
+
+    accessScreen.classList.add("show");
+}
+
+
+const testAudio =
+    params.get("testaudio");
+
+
+if(testAudio === "10"){
+
+    setTimeout(() => audio10.play(), 800);
+}
+
+if(testAudio === "5"){
+
+    setTimeout(() => audio5.play(), 800);
+}
+
+if(testAudio === "1"){
+
+    setTimeout(() => audio1.play(), 800);
+}
+
+if(testAudio === "start"){
+
+    setTimeout(
+        () => playStartSequence("manual-test-start"),
+        800
+    );
+}
+
+
+/* first update */
+
+updateTimer();
+
+
+/* update four times per second */
+
+setInterval(
+    updateTimer,
+    250
+);
+
+</script>
 
 /* ===============================
    TIMER 15 MINUTES
