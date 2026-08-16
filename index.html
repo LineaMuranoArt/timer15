@@ -988,34 +988,55 @@ function updateTimer(){
         remaining % 60;
 
 
-    /*
-       AUDIO AT 10 / 5 / 1 MINUTE
-    */
+   /*
+   AUDIO ANNOUNCEMENTS
+   based on the actual clock
+*/
 
-    if(remaining === 600){
+const isTenMinutesBefore =
+    minute === 5 ||
+    minute === 20 ||
+    minute === 35 ||
+    minute === 50;
 
-        playAudioOnce(
-            announcementKey(now, "10"),
-            audio10
-        );
-    }
+const isFiveMinutesBefore =
+    minute === 10 ||
+    minute === 25 ||
+    minute === 40 ||
+    minute === 55;
 
-    if(remaining === 300){
+const isOneMinuteBefore =
+    minute === 14 ||
+    minute === 29 ||
+    minute === 44 ||
+    minute === 59;
 
-        playAudioOnce(
-            announcementKey(now, "5"),
-            audio5
-        );
-    }
 
-    if(remaining === 60){
+/* trigger only during the first second */
 
-        playAudioOnce(
-            announcementKey(now, "1"),
-            audio1
-        );
-    }
+if(isTenMinutesBefore && second <= 1){
 
+    playAudioOnce(
+        announcementKey(now, "10"),
+        audio10
+    );
+}
+
+if(isFiveMinutesBefore && second <= 1){
+
+    playAudioOnce(
+        announcementKey(now, "5"),
+        audio5
+    );
+}
+
+if(isOneMinuteBefore && second <= 1){
+
+    playAudioOnce(
+        announcementKey(now, "1"),
+        audio1
+    );
+}
 
     /*
        DRAW COUNTDOWN
