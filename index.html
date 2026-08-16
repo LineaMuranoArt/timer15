@@ -798,10 +798,26 @@ function playAudioOnce(key, audio){
 
     lastAnnouncementKey = key;
 
-    audio.currentTime = 0;
+    chime.currentTime = 0;
 
-    audio.play().catch(error => {
-        console.log("Audio playback blocked:", error);
+    const playVoice = () => {
+
+        setTimeout(() => {
+
+            audio.currentTime = 0;
+
+            audio.play().catch(error => {
+                console.log("Audio playback blocked:", error);
+            });
+
+        }, 450);
+    };
+
+    chime.onended = playVoice;
+
+    chime.play().catch(error => {
+        console.log("Chime blocked:", error);
+        playVoice();
     });
 }
 
