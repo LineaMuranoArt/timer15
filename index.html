@@ -1077,21 +1077,21 @@ if(params.get("test") === "access"){
 const testAudio =
     params.get("testaudio");
 
-
 if(testAudio === "10"){
 
-    setTimeout(() => audio10.play(), 800);
+    setTimeout(() => playAudioOnce("test-10", audio10), 800);
 }
 
 if(testAudio === "5"){
 
-    setTimeout(() => audio5.play(), 800);
+    setTimeout(() => playAudioOnce("test-5", audio5), 800);
 }
 
 if(testAudio === "1"){
 
-    setTimeout(() => audio1.play(), 800);
+    setTimeout(() => playAudioOnce("test-1", audio1), 800);
 }
+
 
 if(testAudio === "start"){
 
