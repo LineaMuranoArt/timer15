@@ -824,6 +824,7 @@ const chime =
    during the 4 timer updates per second. */
 
 let lastAnnouncementKey = "";
+let previousRemainingForAudio = null;
 
 
 function playAudioOnce(key, audio){
@@ -956,19 +957,6 @@ function updateTimer(){
 
 
     /*
-       AUDIO AT START
-       :00 / :15 / :30 / :45 exactly
-    */
-
-    if(isDemoMinute && second <= 3){
-
-        playStartSequence(
-            announcementKey(now, "start")
-        );
-    }
-
-
-    /*
        FIND NEXT DEMONSTRATION
     */
 
@@ -1024,55 +1012,39 @@ function updateTimer(){
         remaining % 60;
 
 
-   /*
-   AUDIO ANNOUNCEMENTS
-   based on the actual clock
-*/
+    /*
+       AUDIO ANNOUNCEMENTS
+       Triggered from the countdown itself.
+    */
 
-const isTenMinutesBefore =
-    minute === 5 ||
-    minute === 20 ||
-    minute === 35 ||
-    minute === 50;
+    const currentDemoKey =
+        now.getFullYear() + "-" +
+        (now.getMonth() + 1) + "-" +
+        now.getDate() + "-" +
+        now.getHours() + "-" +
+        nextMinute;
 
-const isFiveMinutesBefore =
-    minute === 10 ||
-    minute === 25 ||
-    minute === 40 ||
-    minute === 55;
+    if(previousRemainingForAudio !== null){
 
-const isOneMinuteBefore =
-    minute === 14 ||
-    minute === 29 ||
-    minute === 44 ||
-    minute === 59;
+        if(previousRemainingForAudio > 600 && remaining <= 600){
+            playAudioOnce(currentDemoKey + "-10", audio10);
+        }
 
+        if(previousRemainingForAudio > 300 && remaining <= 300){
+            playAudioOnce(currentDemoKey + "-5", audio5);
+        }
 
-/* trigger only during the first second */
+        if(previousRemainingForAudio > 60 && remaining <= 60){
+            playAudioOnce(currentDemoKey + "-1", audio1);
+        }
 
-if(isTenMinutesBefore && second <= 3){
+        if(remaining > previousRemainingForAudio + 100){
+            playStartSequence(currentDemoKey + "-start");
+        }
+    }
 
-    playAudioOnce(
-        announcementKey(now, "10"),
-        audio10
-    );
-}
+    previousRemainingForAudio = remaining;
 
-if(isFiveMinutesBefore && second <= 3){
-
-    playAudioOnce(
-        announcementKey(now, "5"),
-        audio5
-    );
-}
-
-if(isOneMinuteBefore && second <= 3){
-
-    playAudioOnce(
-        announcementKey(now, "1"),
-        audio1
-    );
-}
 
     /*
        DRAW COUNTDOWN
