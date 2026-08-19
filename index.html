@@ -742,23 +742,39 @@ body{
 
 <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-database-compat.js"></script>
+
 <script>
+/* SHARED CLOCK — SAME SERVER TIME AS LIVE15 */
 const firebaseConfigClock = {
-  apiKey:"AIzaSyBbIg0TWEdSs3hid2xaP7tBkrytqcIGDM0",
-  authDomain:"linea-murano-display.firebaseapp.com",
-  databaseURL:"https://linea-murano-display-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId:"linea-murano-display",
-  storageBucket:"linea-murano-display.firebasestorage.app",
-  messagingSenderId:"1056543125469",
-  appId:"1:1056543125469:web:464ec5e1c93f53f5fb1034"
+    apiKey: "AIzaSyBbIg0TWEdSs3hid2xaP7tBkrytqcIGDM0",
+    authDomain: "linea-murano-display.firebaseapp.com",
+    databaseURL: "https://linea-murano-display-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "linea-murano-display",
+    storageBucket: "linea-murano-display.firebasestorage.app",
+    messagingSenderId: "1056543125469",
+    appId: "1:1056543125469:web:464ec5e1c93f53f5fb1034"
 };
-if(!firebase.apps.length){ firebase.initializeApp(firebaseConfigClock); }
+
+if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfigClock);
+}
+
 let sharedClockOffset = 0;
-firebase.database().ref(".info/serverTimeOffset").on("value", s => {
-  const v=s.val(); if(typeof v==="number") sharedClockOffset=v;
+
+firebase.database()
+.ref(".info/serverTimeOffset")
+.on("value", function(snapshot){
+    const value = snapshot.val();
+    if(typeof value === "number"){
+        sharedClockOffset = value;
+    }
 });
-function sharedNow(){ return new Date(Date.now()+sharedClockOffset); }
+
+function sharedNow(){
+    return new Date(Date.now() + sharedClockOffset);
+}
 </script>
+
 <script>
 
 /* ===============================
@@ -779,50 +795,119 @@ const accessScreen =
 
 
 /* ===============================
-   AUDIO ANNOUNCEMENTS — ROBUST
+   AUDIO ANNOUNCEMENTS
 ================================ */
 
-const audio10 = new Audio("10%20Minuti.wav");
-const audio5 = new Audio("5%20Minuti.wav");
-const audio1 = new Audio("1%20Minuti.wav");
-const audioStart = new Audio("Starting.wav");
-const chime = new Audio("chime.wav");
+const audio10 =
+    new Audio("10 Minuti.wav");
 
-[audio10,audio5,audio1,audioStart,chime].forEach(a=>{
-  a.preload="auto";
-  try{ a.load(); }catch(e){}
+const audio5 =
+    new Audio("5 Minuti.wav");
+
+const audio1 =
+    new Audio("1 Minuti.wav");
+
+const audioStart =
+    new Audio("Starting.wav");
+
+const chime =
+    new Audio("chime.wav");
+
+
+[audio10, audio5, audio1, audioStart, chime]
+.forEach(audio => {
+    audio.preload = "auto";
 });
 
-const playedAnnouncements = new Set();
-let previousRemaining = null;
 
-function safePlay(a){
-  try{ a.pause(); a.currentTime=0; }catch(e){}
-  a.play().catch(err=>{
-    console.log("Audio retry:",err);
-    setTimeout(()=>{
-      try{ a.pause(); a.currentTime=0; a.play().catch(()=>{}); }catch(e){}
-    },500);
-  });
+/* Keeps each announcement from repeating
+   during the 4 timer updates per second. */
+
+let lastAnnouncementKey = "";
+
+
+function playAudioOnce(key, audio){
+
+    if(lastAnnouncementKey === key){
+        return;
+    }
+
+    lastAnnouncementKey = key;
+
+    chime.currentTime = 0;
+
+    const playVoice = () => {
+
+        setTimeout(() => {
+
+            audio.currentTime = 0;
+
+            audio.play().catch(error => {
+                console.log("Audio playback blocked:", error);
+            });
+
+        }, 450);
+    };
+
+    chime.onended = playVoice;
+
+    chime.play().catch(error => {
+        console.log("Chime blocked:", error);
+        playVoice();
+    });
 }
 
-function playChimeThenVoice(key, voice){
-  if(playedAnnouncements.has(key)) return;
-  playedAnnouncements.add(key);
 
-  try{ chime.pause(); chime.currentTime=0; }catch(e){}
+function playStartSequence(key){
 
-  const playVoice=()=>setTimeout(()=>safePlay(voice),350);
-  chime.addEventListener("ended",playVoice,{once:true});
-  chime.play().catch(()=>playVoice());
+    if(lastAnnouncementKey === key){
+        return;
+    }
+
+    lastAnnouncementKey = key;
+
+    chime.currentTime = 0;
+
+    const startVoice = () => {
+
+        setTimeout(() => {
+
+            audioStart.currentTime = 0;
+
+            audioStart.play().catch(error => {
+                console.log("Start audio blocked:", error);
+            });
+
+        }, 450);
+    };
+
+
+    chime.onended = startVoice;
+
+    chime.play().catch(error => {
+
+        console.log("Chime blocked:", error);
+
+        /* If the chime cannot play,
+           still play the voice announcement. */
+
+        startVoice();
+    });
 }
 
-function crossedThreshold(prev,cur,t){
-  if(prev===null) return Math.abs(cur-t)<=2;
-  return (prev>t && cur<=t) || Math.abs(cur-t)<=2;
+
+function announcementKey(now, name){
+
+    return (
+        now.getFullYear() + "-" +
+        (now.getMonth() + 1) + "-" +
+        now.getDate() + "-" +
+        now.getHours() + "-" +
+        now.getMinutes() + "-" +
+        name
+    );
 }
 
-function eventKey(ms,name){ return ms+"-"+name; }
 
 /* ===============================
    TIMER
@@ -871,39 +956,123 @@ function updateTimer(){
 
 
     /*
-       ROBUST AUDIO TRIGGERS
+       AUDIO AT START
+       :00 / :15 / :30 / :45 exactly
     */
 
-    const targetDemo = new Date(now.getTime());
-
-    if(nextMinute === 60){
-        targetDemo.setHours(now.getHours()+1,0,0,0);
-    }else{
-        targetDemo.setMinutes(nextMinute,0,0);
-    }
-
-    const targetMs = targetDemo.getTime();
-
-    if(crossedThreshold(previousRemaining, remaining, 600)){
-        playChimeThenVoice(eventKey(targetMs,"10"), audio10);
-    }
-
-    if(crossedThreshold(previousRemaining, remaining, 300)){
-        playChimeThenVoice(eventKey(targetMs,"5"), audio5);
-    }
-
-    if(crossedThreshold(previousRemaining, remaining, 60)){
-        playChimeThenVoice(eventKey(targetMs,"1"), audio1);
-    }
-
     if(isDemoMinute && second <= 3){
-        const currentDemo = new Date(now.getTime());
-        currentDemo.setSeconds(0,0);
-        playChimeThenVoice(eventKey(currentDemo.getTime(),"start"), audioStart);
+
+        playStartSequence(
+            announcementKey(now, "start")
+        );
     }
 
-    previousRemaining = remaining;
 
+    /*
+       FIND NEXT DEMONSTRATION
+    */
+
+    let nextMinute;
+
+
+    if(minute < 15){
+
+        nextMinute = 15;
+
+    }
+    else if(minute < 30){
+
+        nextMinute = 30;
+
+    }
+    else if(minute < 45){
+
+        nextMinute = 45;
+
+    }
+    else{
+
+        nextMinute = 60;
+
+    }
+
+
+    let remaining =
+        ((nextMinute - minute) * 60)
+        - second
+        - (millisecond / 1000);
+
+
+    remaining =
+        Math.ceil(remaining);
+
+
+    if(remaining <= 0){
+
+        remaining = 900;
+
+    }
+
+
+    const mins =
+        Math.floor(
+            remaining / 60
+        );
+
+
+    const secs =
+        remaining % 60;
+
+
+   /*
+   AUDIO ANNOUNCEMENTS
+   based on the actual clock
+*/
+
+const isTenMinutesBefore =
+    minute === 5 ||
+    minute === 20 ||
+    minute === 35 ||
+    minute === 50;
+
+const isFiveMinutesBefore =
+    minute === 10 ||
+    minute === 25 ||
+    minute === 40 ||
+    minute === 55;
+
+const isOneMinuteBefore =
+    minute === 14 ||
+    minute === 29 ||
+    minute === 44 ||
+    minute === 59;
+
+
+/* trigger only during the first second */
+
+if(isTenMinutesBefore && second <= 3){
+
+    playAudioOnce(
+        announcementKey(now, "10"),
+        audio10
+    );
+}
+
+if(isFiveMinutesBefore && second <= 3){
+
+    playAudioOnce(
+        announcementKey(now, "5"),
+        audio5
+    );
+}
+
+if(isOneMinuteBefore && second <= 3){
+
+    playAudioOnce(
+        announcementKey(now, "1"),
+        audio1
+    );
+}
 
     /*
        DRAW COUNTDOWN
@@ -966,22 +1135,22 @@ const testAudio =
     params.get("testaudio");
 
 if(testAudio === "10"){
-    setTimeout(() => playChimeThenVoice("test-10", audio10), 800);
+    setTimeout(() => playAudioOnce("test-10", audio10), 800);
 }
 
 if(testAudio === "5"){
-    setTimeout(() => playChimeThenVoice("test-5", audio5), 800);
+    setTimeout(() => playAudioOnce("test-5", audio5), 800);
 }
 
 if(testAudio === "1"){
-    setTimeout(() => playChimeThenVoice("test-1", audio1), 800);
+    setTimeout(() => playAudioOnce("test-1", audio1), 800);
 }
 
 
 if(testAudio === "start"){
 
     setTimeout(
-        () => playChimeThenVoice("manual-test-start", audioStart),
+        () => playStartSequence("manual-test-start"),
         800
     );
 }
