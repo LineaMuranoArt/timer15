@@ -742,24 +742,39 @@ body{
 
 <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.17.1/firebase-database-compat.js"></script>
+
 <script>
+/* SHARED CLOCK — SAME SERVER TIME AS LIVE15 */
 const firebaseConfigClock = {
-    apiKey:"AIzaSyBbIg0TWEdSs3hid2xaP7tBkrytqcIGDM0",
-    authDomain:"linea-murano-display.firebaseapp.com",
-    databaseURL:"https://linea-murano-display-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId:"linea-murano-display",
-    storageBucket:"linea-murano-display.firebasestorage.app",
-    messagingSenderId:"1056543125469",
-    appId:"1:1056543125469:web:464ec5e1c93f53f5fb1034"
+    apiKey: "AIzaSyBbIg0TWEdSs3hid2xaP7tBkrytqcIGDM0",
+    authDomain: "linea-murano-display.firebaseapp.com",
+    databaseURL: "https://linea-murano-display-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "linea-murano-display",
+    storageBucket: "linea-murano-display.firebasestorage.app",
+    messagingSenderId: "1056543125469",
+    appId: "1:1056543125469:web:464ec5e1c93f53f5fb1034"
 };
-if(!firebase.apps.length){ firebase.initializeApp(firebaseConfigClock); }
-let sharedClockOffset=0;
-firebase.database().ref(".info/serverTimeOffset").on("value",function(s){
-    const v=s.val();
-    if(typeof v==="number"){ sharedClockOffset=v; }
+
+if(!firebase.apps.length){
+    firebase.initializeApp(firebaseConfigClock);
+}
+
+let sharedClockOffset = 0;
+
+firebase.database()
+.ref(".info/serverTimeOffset")
+.on("value", function(snapshot){
+    const value = snapshot.val();
+    if(typeof value === "number"){
+        sharedClockOffset = value;
+    }
 });
-function sharedNow(){ return new Date(Date.now()+sharedClockOffset); }
+
+function sharedNow(){
+    return new Date(Date.now() + sharedClockOffset);
+}
 </script>
+
 <script>
 
 /* ===============================
@@ -784,13 +799,13 @@ const accessScreen =
 ================================ */
 
 const audio10 =
-    new Audio("10 Minuti.wav");
+    new Audio("10%20Minuti.wav");
 
 const audio5 =
-    new Audio("5 Minuti.wav");
+    new Audio("5%20Minuti.wav");
 
 const audio1 =
-    new Audio("1 Minuti.wav");
+    new Audio("1%20Minuti.wav");
 
 const audioStart =
     new Audio("Starting.wav");
@@ -819,27 +834,27 @@ function playAudioOnce(key, audio){
 
     lastAnnouncementKey = key;
 
-    try{
-        chime.pause();
-        chime.currentTime = 0;
-        chime.play().catch(error => console.log("Chime blocked:", error));
-    }catch(e){}
+    chime.currentTime = 0;
 
-    setTimeout(() => {
-        try{
-            audio.pause();
+    const playVoice = () => {
+
+        setTimeout(() => {
+
             audio.currentTime = 0;
+
             audio.play().catch(error => {
-                console.log("Voice retry:", error);
-                setTimeout(() => {
-                    try{
-                        audio.currentTime = 0;
-                        audio.play().catch(err => console.log("Voice blocked:", err));
-                    }catch(e){}
-                }, 500);
+                console.log("Audio playback blocked:", error);
             });
-        }catch(e){}
-    }, 1800);
+
+        }, 450);
+    };
+
+    chime.onended = playVoice;
+
+    chime.play().catch(error => {
+        console.log("Chime blocked:", error);
+        playVoice();
+    });
 }
 
 
@@ -851,27 +866,33 @@ function playStartSequence(key){
 
     lastAnnouncementKey = key;
 
-    try{
-        chime.pause();
-        chime.currentTime = 0;
-        chime.play().catch(error => console.log("Chime blocked:", error));
-    }catch(e){}
+    chime.currentTime = 0;
 
-    setTimeout(() => {
-        try{
-            audioStart.pause();
+    const startVoice = () => {
+
+        setTimeout(() => {
+
             audioStart.currentTime = 0;
+
             audioStart.play().catch(error => {
-                console.log("Start retry:", error);
-                setTimeout(() => {
-                    try{
-                        audioStart.currentTime = 0;
-                        audioStart.play().catch(err => console.log("Start blocked:", err));
-                    }catch(e){}
-                }, 500);
+                console.log("Start audio blocked:", error);
             });
-        }catch(e){}
-    }, 1800);
+
+        }, 450);
+    };
+
+
+    chime.onended = startVoice;
+
+    chime.play().catch(error => {
+
+        console.log("Chime blocked:", error);
+
+        /* If the chime cannot play,
+           still play the voice announcement. */
+
+        startVoice();
+    });
 }
 
 
